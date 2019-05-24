@@ -46,7 +46,7 @@ protected $config = [
 ```php
 require './vendor/autoload.php';
 
-use Miniprogram\Formid\FormId;
+use Haojohnny\Formid\FormId;
 
 // 方法一：数据存储默认使用Redis.php的连接实例
 $form = new FormId();
