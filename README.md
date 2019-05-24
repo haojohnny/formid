@@ -1,4 +1,4 @@
-<h1 align="center"> formID </h1>
+<h1 align="center"> haojohnny/formid </h1>
 
 <p align="center">基于Redis的微信小程序form-id的收集管理工具</p>
 
@@ -6,7 +6,7 @@
 ## 安装
 
 ```shell
-$ composer require miniprogram/formid -vvv
+$ composer require haojohnny/formid -vvv
 ```
 
 ## form-id的生命周期
