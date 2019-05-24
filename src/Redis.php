@@ -6,8 +6,7 @@
 // +----------------------------------------------------------------------
 
 
-namespace Miniprogram\Formid;
-
+namespace Haojohnny\Formid;
 
 class Redis
 {
