@@ -1,0 +1,17 @@
+{
+    "name": "miniprogram\/formid",
+    "description": "It is used manage form-id for wechat mini program.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Johnny",
+            "email": "mail@yhcloud.cc"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Miniprogram\\Formid\\": "src"
+        }
+    }
+}
