@@ -80,7 +80,7 @@ $form->save('user_id:1001', 'form-value');
 
 ```php
 echo $form->get('user_id:1001'); // form-value
-return $form->get('user_id:1002'); // null
+echo $form->get('user_id:1002'); // null
 ```
 
 ## Contributing

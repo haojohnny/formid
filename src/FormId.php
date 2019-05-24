@@ -38,14 +38,6 @@ class FormId
 	}
 
 	/**
-	 * @return \redis
-	 */
-	public function getRedis()
-	{
-		return $this->redis;
-	}
-
-	/**
 	 * @param $uniqueId
 	 * @return string
 	 */
@@ -60,16 +52,16 @@ class FormId
 	 */
 	public function save($uniqueId, $formId)
 	{
-		$key = self::getKey($uniqueId);
+		$key = $this->getKey($uniqueId);
 
 		$expire_time = strtotime('+'.$this->config['expire']);
-		$this->getRedis()->zAdd($key, $expire_time, $formId);
+		$this->redis->zAdd($key, $expire_time, $formId);
 
-		if (($count = self::count($uniqueId)) > $this->config['count']) {
-			$this->getRedis()->zRemRangeByRank($key, 0, $count - $this->config['count'] - 1);
+		if (($count = $this->count($uniqueId)) > $this->config['count']) {
+			$this->redis->zRemRangeByRank($key, 0, $count - $this->config['count'] - 1);
 		}
 
-		$this->getRedis()->expire($key, $expire_time);
+		$this->redis->expire($key, $expire_time);
 	}
 
 	/**
@@ -79,7 +71,7 @@ class FormId
 	public function savePrepayId($uniqueId, $prepayId)
 	{
 		for ($i=0; $i<3; $i++) {
-			self::save($uniqueId, $prepayId);
+			$this->save($uniqueId, $prepayId);
 		}
 	}
 
@@ -92,10 +84,10 @@ class FormId
 
 		$formId = null;
 
-		self::rmInvalid($uniqueId);
-		$formIds = $this->getRedis()->zRange(self::getKey($uniqueId), 0, 0, false);
+		$this->rmInvalid($uniqueId);
+		$formIds = $this->redis->zRange($this->getKey($uniqueId), 0, 0, false);
 		if (!empty($formIds)) {
-			self::del($uniqueId, $formId = $formIds[0]);
+			$this->del($uniqueId, $formId = $formIds[0]);
 		}
 
 		return $formId;
@@ -108,7 +100,7 @@ class FormId
 	 */
 	public function del($uniqueId, $formId)
 	{
-		return $this->getRedis()->zDelete(self::getKey($uniqueId), $formId);
+		return $this->redis->zDelete($this->getKey($uniqueId), $formId);
 	}
 
 	/**
@@ -117,8 +109,8 @@ class FormId
 	 */
 	public function rmInvalid($uniqueId)
 	{
-		return $this->getRedis()
-			->zRemRangeByScore(self::getKey($uniqueId), 0, strtotime('-'.$this->config['expire']));
+		return $this->redis
+			->zRemRangeByScore($this->getKey($uniqueId), 0, strtotime('-'.$this->config['expire']));
 	}
 
 	/**
@@ -127,7 +119,7 @@ class FormId
 	 */
 	public function count($uniqueId)
 	{
-		self::rmInvalid($uniqueId);
-		return $this->getRedis()->zCard(self::getKey($uniqueId));
+		$this->rmInvalid($uniqueId);
+		return $this->redis->zCard($this->getKey($uniqueId));
 	}
 }
