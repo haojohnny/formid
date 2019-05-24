@@ -13,12 +13,12 @@ $ composer require miniprogram/formid -vvv
 微信form-id从小程序中产生后有7天的有效期，因此form-id有效期的值应设置小于7天，具体看业务场景，把有效期提前一定时间，以确保form-id在业务中平滑使用。
 
        
-                         save                                                                            get
-    [form-value3, 7day] ------> { [form-value3, 7day], [form-value2, 5day], [form-value1, 1day], ... } ------> form-value1
-                                                                                                  |
-                                                                                                  | auto remove
-                                                                                                  v                                                             
-                                                                                            [form-value0, -1day]
+       save                                                       get
+     ------> { [form-value2, 7day], [form-value1, 1day], ... } ------> form-value1
+                                                          |
+                                                          | auto remove
+                                                          v                                                             
+                                                    [form-value0, -1day]
 ## 配置                                                                         
 
 在Redis.php文件中配置Redis连接
@@ -33,12 +33,12 @@ protected $options = [
     'persistent' => false,
 ];
 ```
-在FormId.php文件中配置
+在FormId.php文件中设置form-id缓存配置
 ```php
 protected $config = [
-    'prefix' => 'form_id_', // form-id缓存前缀
-    'count' => 50,          // form-id最大保存数量
-    'expire' => '7 days'    // form-id有效期（必须是strtotime函数能识别的语义字符串，有效期必须小于等于7天）
+    'prefix' => 'form_id_',  // form-id缓存前缀
+    'count'  => 50,          // form-id最大保存数量
+    'expire' => '7 days'     // form-id有效期（必须是strtotime函数能识别的语义字符串，有效期必须小于等于7天）
 ];
 ```
 
@@ -82,8 +82,6 @@ $form->save('user_id:1001', 'form-value');
 echo $form->get('user_id:1001'); // form-value
 return $form->get('user_id:1002'); // null
 ```
-
-TODO
 
 ## Contributing
 
