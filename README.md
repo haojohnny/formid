@@ -10,6 +10,8 @@ $ composer require miniprogram/formid -vvv
 ```
 
 ## form-id的生命周期
+微信form-id从小程序中产生后有7天的有效期，因此form-id有效期的值应设置小于7天，具体看业务场景，把有效期提前一定时间，以确保form-id在业务中平滑使用。
+
        
                          save                                                                            get
     [form-value3, 7day] ------> { [form-value3, 7day], [form-value2, 5day], [form-value1, 1day], ... } ------> form-value1
@@ -69,7 +71,7 @@ $form = new FormId($redis, $options);
 
 保存form-id
 
-每次调用save的时，对应的form-id容器将刷新有效期为7day，当7day之后没有新的form-id进行save的时候，该form-id容器将被redis释放
+每次调用save的时，对应的form-id容器将刷新有效期为7day，当7day之后没有新的form-id进行save时，该form-id容器将被redis释放
 ```php
 $form->save('user_id:1001', 'form-value');
 ```
