@@ -13,10 +13,13 @@ class FormId
 	// formId的缓存配置
 	protected $config = [
 		'prefix' => 'form_id_',
-		'count' => 50,
+		'count'  => 50,
 		'expire' => '7 days'
 	];
 
+	/**
+	 * @var \Redis|null
+	 */
 	protected $redis = null;
 
 	/**
@@ -38,6 +41,7 @@ class FormId
 	}
 
 	/**
+	 * 获取缓存key
 	 * @param $uniqueId
 	 * @return string
 	 */
@@ -47,8 +51,10 @@ class FormId
 	}
 
 	/**
+	 * 保存form-id
 	 * @param $uniqueId
 	 * @param $formId
+	 * @return bool
 	 */
 	public function save($uniqueId, $formId)
 	{
@@ -61,21 +67,26 @@ class FormId
 			$this->redis->zRemRangeByRank($key, 0, $count - $this->config['count'] - 1);
 		}
 
-		$this->redis->expire($key, $expire_time);
+		return $this->redis->expire($key, $expire_time);
 	}
 
 	/**
+	 * 保存prepay-id
 	 * @param $uniqueId
 	 * @param $prepayId
+	 * @return bool
 	 */
 	public function savePrepayId($uniqueId, $prepayId)
 	{
 		for ($i=0; $i<3; $i++) {
 			$this->save($uniqueId, $prepayId);
 		}
+
+		return true;
 	}
 
 	/**
+	 * 获取form-id
 	 * @param $uniqueId
 	 * @return string
 	 */
@@ -94,6 +105,7 @@ class FormId
 	}
 
 	/**
+	 * 删除指定form-id
 	 * @param $uniqueId
 	 * @param $formId
 	 * @return mixed
@@ -104,6 +116,7 @@ class FormId
 	}
 
 	/**
+	 * 移除无效form-id
 	 * @param $uniqueId
 	 * @return mixed
 	 */
@@ -114,6 +127,7 @@ class FormId
 	}
 
 	/**
+	 * 获取form-id个数
 	 * @param $uniqueId
 	 * @return int
 	 */
@@ -121,5 +135,15 @@ class FormId
 	{
 		$this->rmInvalid($uniqueId);
 		return $this->redis->zCard($this->getKey($uniqueId));
+	}
+
+	/**
+	 * 清除缓存
+	 * @param $uniqueId
+	 * @return int
+	 */
+	public function clear($uniqueId)
+	{
+		return $this->redis->del($this->getKey($uniqueId));
 	}
 }

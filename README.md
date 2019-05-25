@@ -71,7 +71,7 @@ $form = new FormId($redis, $options);
 
 保存form-id
 
-每次调用save的时，对应的form-id容器将刷新有效期为7day，当7day之后没有新的form-id进行save时，该form-id容器将被redis释放
+每次调用save时，对应的form-id容器将刷新有效期为7day，当7day之后没有新的form-id进行save时，该form-id容器将被redis释放
 ```php
 $form->save('user_id:1001', 'form-value');
 ```
